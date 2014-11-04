@@ -1,0 +1,16 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<web-app id="${symbol_dollar}{project.build.finalName}">
+    <jsp fast-jstl="false"/>
+
+    <!--database>
+        <jndi-name>jdbc/appfuse</jndi-name>
+        <driver type="${symbol_dollar}{jdbc.driverClassName}">
+            <url>${symbol_dollar}{jdbc.url}</url>
+            <user>${symbol_dollar}{jdbc.username}</user>
+            <password>${symbol_dollar}{jdbc.password}</password>
+        </driver>
+    </database-->
+</web-app>
+

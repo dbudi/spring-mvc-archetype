@@ -1,0 +1,21 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+${symbol_pound}macro( displayStackedMenu ${symbol_dollar}menu )
+  ${symbol_pound}if (${symbol_dollar}displayer.isAllowed(${symbol_dollar}menu))
+      ${symbol_pound}${symbol_pound} set menu title
+      ${symbol_pound}set (${symbol_dollar}title = ${symbol_dollar}displayer.getMessage(${symbol_dollar}menu.title))
+
+      <ul class="nav nav-pills nav-stacked">
+          ${symbol_pound}if (!${symbol_dollar}menu.parent) <li class="nav-header">${symbol_dollar}title</li>${symbol_pound}end
+      ${symbol_pound}foreach (${symbol_dollar}menuItem in ${symbol_dollar}menu.components)
+        ${symbol_pound}if (${symbol_dollar}displayer.isAllowed(${symbol_dollar}menuItem))
+          ${symbol_pound}set (${symbol_dollar}title = ${symbol_dollar}displayer.getMessage(${symbol_dollar}menuItem.title))
+          <li ${symbol_pound}if (${symbol_dollar}request.getRequestURI().contains(${symbol_dollar}menuItem.url))class="active"${symbol_pound}end><a href="${symbol_dollar}menuItem.url" title="${symbol_dollar}title" ${symbol_pound}if(${symbol_dollar}menuItem.target)target="${symbol_dollar}menuItem.target"${symbol_pound}end>${symbol_dollar}{title}</a></li>
+        ${symbol_pound}end
+      ${symbol_pound}end
+      </ul>
+  ${symbol_pound}end
+${symbol_pound}end
+
+${symbol_pound}displayStackedMenu(${symbol_dollar}menu)
