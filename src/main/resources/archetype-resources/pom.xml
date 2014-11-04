@@ -413,7 +413,7 @@
         <commons.io.version>2.4</commons.io.version>
         <displaytag.version>1.2</displaytag.version>
         <spring.version>4.0.0.RELEASE</spring.version>
-        <springmodules.validation.version>0.8</springmodules.validation.version>
+        <springmodules.validation.version>0.8a</springmodules.validation.version>
 	
 	<!-- integration framework -->
 	<camel.version>2.14.0</camel.version>
