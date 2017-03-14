@@ -109,7 +109,7 @@ Navigate to newly created project directory (`my-artifactId`) and then run:
 Test in the browser
 -------------------
 
-	http://localhost:8080/
+	http://localhost:8080/my-artifactId
 
 Note: No additional services are required in order to start the application. Mongo DB configuration is in place but it is not used in the code.
 
