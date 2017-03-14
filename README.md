@@ -131,4 +131,8 @@ public interface MyRepository extends MongoRepository<MyDocument, String> {
 }
 ```
 
-
+Reference
+---------
+1. Rafal Borowiec blog [codeleak.pl](http://blog.codeleak.pl/2016/01/spring-mvc-4-quickstart-maven-archetype.html)
+2. Spring Data JPA Tutorial: Auditing [petrikainulainen.net](https://www.petrikainulainen.net/programming/spring-framework/spring-data-jpa-tutorial-auditing-part-one/)
+3. Spring Data JPA Tutorial: Introduction to Query Methods [petrikainulainen.net](https://www.petrikainulainen.net/programming/spring-framework/spring-data-jpa-tutorial-introduction-to-query-methods/)
