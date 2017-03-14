@@ -85,7 +85,26 @@ Note: The above command will bootstrap a project using the archetype published i
 Compile the project
 -------------------
 
-Navigate to newly created project directory (`my-artifactId`) and then run:
+Navigate to newly created project directory (`my-artifactId`). Edit `pom.xml`, add `<jdbc.password></jdbc.password>`
+
+        <profile>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+		    </activation>  	
+			<id>hsqldb</id>
+			<properties>
+				<hibernate.dialect>org.hibernate.dialect.HSQLDialect</hibernate.dialect>
+				<jdbc.groupId>org.hsqldb</jdbc.groupId>
+				<jdbc.artifactId>hsqldb</jdbc.artifactId>
+				<jdbc.version>2.3.4</jdbc.version>
+				<jdbc.driverClassName>org.hsqldb.jdbcDriver</jdbc.driverClassName>
+				<jdbc.url>jdbc:hsqldb:/tmp/${db.name};shutdown=true</jdbc.url>
+				<jdbc.username>sa</jdbc.username>
+                <jdbc.password></jdbc.password>
+			</properties>
+		</profile>
+
+Then compile project by running this command:
 
 ```bash
 	mvn clean install
@@ -110,6 +129,16 @@ Test in the browser
 -------------------
 
 	http://localhost:8080/my-artifactId
+	
+Signin using this:
+
+    userId : admin
+    password: admin
+
+or
+
+    userId : user
+    password : demo
 
 Note: No additional services are required in order to start the application. Mongo DB configuration is in place but it is not used in the code.
 
