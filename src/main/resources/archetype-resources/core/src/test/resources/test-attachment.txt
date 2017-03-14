@@ -1,4 +1,0 @@
-#set( $symbol_pound = '#' )
-#set( $symbol_dollar = '$' )
-#set( $symbol_escape = '\' )
-This file exists so that a unit test which tests sending email with an attachment succeeds.
