@@ -25,18 +25,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.springmvc.model.Account;
+import com.github.springmvc.model.ActiveSession;
 import com.github.springmvc.model.Menu;
 import com.github.springmvc.model.Role;
 import com.github.springmvc.repository.AccountRepository;
+import com.github.springmvc.repository.ActiveSessionRepository;
 import com.github.springmvc.repository.MenuRepository;
 import com.github.springmvc.repository.RoleRepository;
+import com.github.springmvc.util.IConstants;
 
 @Service("accountService")
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class AccountService implements UserDetailsService {
 	private static Logger logger = LoggerFactory.getLogger(AccountService.class);
-	
-	private static final int MAX_ATTEMPTS = 3;
 	
 	@Autowired
 	private AccountRepository accountRepository;
@@ -44,6 +45,8 @@ public class AccountService implements UserDetailsService {
 	private RoleRepository roleRepository;
 	@Autowired
 	private MenuRepository menuRepository;
+	@Autowired
+	private ActiveSessionRepository activeSessionRepository;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -151,15 +154,30 @@ public class AccountService implements UserDetailsService {
 	}
 	
 	@Transactional
+	public void updateLastLogin(String userId){		
+		accountRepository.updateLastLogin(userId, new Date());
+	}
+	
+	@Transactional
 	public void increaseLoginFailCounter(String userId){
 		Account account = accountRepository.findOne(userId);		
 		logger.debug("account before increase={}", account);
 		Integer failCounter = account.getFailCounter()==null?1:account.getFailCounter() + 1;
 		accountRepository.updateLoginFailCounter(userId, failCounter);		
-		if(failCounter >= MAX_ATTEMPTS){
+		if(failCounter >= IConstants.MAX_LOGIN_FAILED_ATTEMPTS){
 			// locked user
 			accountRepository.setAccountNonLocked(userId, false);			
 		}
+	}
+	
+	@Transactional
+	public ActiveSession saveSession(ActiveSession session){
+		return activeSessionRepository.save(session);
+	}
+	
+	@Transactional
+	public void removeSession(String userName){
+		activeSessionRepository.deleteByUserName(userName);
 	}
 	
 	private Authentication authenticate(Account account) {
@@ -176,7 +194,11 @@ public class AccountService implements UserDetailsService {
 	}
 
 	private GrantedAuthority createAuthority(Account account) {
-		return new SimpleGrantedAuthority(account.getRole().getId());
+		if(account.getRole() != null){
+			return new SimpleGrantedAuthority(account.getRole().getId());
+		} else {
+			return new SimpleGrantedAuthority("ROLE_ANONYMOUS");
+		}
 	}
 
 }

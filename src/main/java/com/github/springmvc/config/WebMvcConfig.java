@@ -1,6 +1,7 @@
 package com.github.springmvc.config;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -11,10 +12,14 @@ import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
 import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
@@ -89,6 +94,28 @@ class WebMvcConfig extends WebMvcConfigurationSupport {
         thymeleafViewResolver.setCharacterEncoding("UTF-8");
         return thymeleafViewResolver;
     }
+    
+	@Bean
+	public LocaleResolver localeResolver() {
+		CookieLocaleResolver resolver = new CookieLocaleResolver();
+		Locale localeBahasa = new Locale("in","ID");
+		Locale localeEnglish = new Locale("en");
+		// set default language to bahasa Indonesia
+		resolver.setDefaultLocale(localeBahasa);
+		// set default language to english
+//		resolver.setDefaultLocale(localeEnglish);
+		
+		resolver.setCookieName("LocaleCookie");
+		resolver.setCookieMaxAge(4800);
+		return resolver;
+	}
+
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
+		interceptor.setParamName("lang");
+		registry.addInterceptor(interceptor);
+	}
 
     @Override
     public Validator getValidator() {

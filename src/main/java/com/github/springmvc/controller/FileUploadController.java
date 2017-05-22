@@ -47,6 +47,11 @@ public class FileUploadController{
 	@Autowired
 	FileValidator fileValidator;
 	
+	@ModelAttribute("module")
+	String module() {
+		return "upload";
+	}
+	
     @Autowired
     public FileUploadController(StorageService storageService) {
         this.storageService = storageService;

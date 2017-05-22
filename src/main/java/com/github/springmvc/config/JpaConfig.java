@@ -1,11 +1,18 @@
 package com.github.springmvc.config;
 
+import java.util.Hashtable;
 import java.util.Properties;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.cfg.Environment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,6 +40,7 @@ import com.zaxxer.hikari.HikariDataSource;
 @EnableJpaAuditing(dateTimeProviderRef = "dateTimeProvider", auditorAwareRef="auditorProvider")
 @EnableJpaRepositories(basePackageClasses = Application.class)
 class JpaConfig {
+	private static final Logger logger = LoggerFactory.getLogger(JpaConfig.class);
 
     @Value("${dataSource.driverClassName}")
     private String driver;
@@ -52,44 +60,72 @@ class JpaConfig {
     private String formatSql;
     @Value("${hibernate.use_sql_comments}")
     private String useSqlComments;
+    
+    @Value("${dataSource.jndiName}")
+    private String dataSourceJndiName;
 
     @Bean
     public DataSource dataSource() {
-        HikariConfig config = new HikariConfig();
-        config.setDriverClassName(driver);
-        config.setJdbcUrl(url);
-        config.setUsername(username);
-        config.setPassword(password);
-        config.addDataSourceProperty("cachePrepStmts", "true");
-        config.addDataSourceProperty("prepStmtCacheSize", "250");
-        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-        config.addDataSourceProperty("useServerPrepStmts", "true");
-     // uncomment config below only for db oracle
-//        config.setConnectionTestQuery("select sysdate from dual");
-
-        return new HikariDataSource(config);
+    	if(StringUtils.isNotBlank(dataSourceJndiName)){
+			logger.info("lookup datasource={}", dataSourceJndiName);
+			Hashtable<String, String> env = new Hashtable<String, String>();
+			// uncomment code below only if use weblogic datasource
+			/*
+			env.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
+			env.put(Context.PROVIDER_URL, "t3://localhost:7001");
+			*/
+			logger.info("environment={}", env);
+			DataSource dataSource = null;
+			try {
+				Context context = new InitialContext(env);
+				logger.info("context={}", context);
+				dataSource = (DataSource) context.lookup(dataSourceJndiName);
+			} catch (NamingException e) {
+				logger.error("failed get dataSourceJndiName=" + dataSourceJndiName,
+						e);
+			}
+			return dataSource;
+    	} else {
+	        HikariConfig config = new HikariConfig();
+	        config.setDriverClassName(driver);
+	        config.setJdbcUrl(url);
+	        config.setUsername(username);
+	        config.setPassword(password);
+	        config.addDataSourceProperty("cachePrepStmts", "true");
+	        config.addDataSourceProperty("prepStmtCacheSize", "250");
+	        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+	        config.addDataSourceProperty("useServerPrepStmts", "true");
+	     // uncomment config below only for db oracle
+	//        config.setConnectionTestQuery("select sysdate from dual");
+	
+	        return new HikariDataSource(config);
+    	}
     }
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
-        LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
-        entityManagerFactoryBean.setDataSource(dataSource);
-
-        String entities = ClassUtils.getPackageName(Application.class);
-        String converters = ClassUtils.getPackageName(Jsr310JpaConverters.class);
-        entityManagerFactoryBean.setPackagesToScan(entities, converters);
-
-        entityManagerFactoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-
-        Properties jpaProperties = new Properties();
-        jpaProperties.put(Environment.DIALECT, dialect);
-        jpaProperties.put(Environment.HBM2DDL_AUTO, hbm2ddlAuto);
-        jpaProperties.put(Environment.SHOW_SQL, showSql);
-        jpaProperties.put(Environment.FORMAT_SQL, formatSql);
-        jpaProperties.put(Environment.USE_SQL_COMMENTS, useSqlComments);
-        entityManagerFactoryBean.setJpaProperties(jpaProperties);
-
-        return entityManagerFactoryBean;
+    	LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
+    	try{
+	        
+	        entityManagerFactoryBean.setDataSource(dataSource);
+	
+	        String entities = ClassUtils.getPackageName(Application.class);
+	        String converters = ClassUtils.getPackageName(Jsr310JpaConverters.class);
+	        entityManagerFactoryBean.setPackagesToScan(entities, converters);
+	
+	        entityManagerFactoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+	
+	        Properties jpaProperties = new Properties();
+	        jpaProperties.put(Environment.DIALECT, dialect);
+	        jpaProperties.put(Environment.HBM2DDL_AUTO, hbm2ddlAuto);
+	        jpaProperties.put(Environment.SHOW_SQL, showSql);
+	        jpaProperties.put(Environment.FORMAT_SQL, formatSql);
+	        jpaProperties.put(Environment.USE_SQL_COMMENTS, useSqlComments);
+	        entityManagerFactoryBean.setJpaProperties(jpaProperties);	
+    	}catch(Exception e){
+    		logger.error("failed create entityManagerFactory", e);
+    	}
+    	return entityManagerFactoryBean;
     }
 
     @Bean

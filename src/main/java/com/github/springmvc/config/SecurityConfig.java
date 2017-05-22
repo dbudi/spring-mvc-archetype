@@ -26,6 +26,7 @@ import org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAu
 import org.springframework.security.ldap.userdetails.LdapUserDetailsMapper;
 import org.springframework.security.ldap.userdetails.UserDetailsContextMapper;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 import com.github.springmvc.security.LimitLoginAuthenticationProvider;
 import com.github.springmvc.service.AccountService;
@@ -139,5 +140,15 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
             	return userDetails;
             }
         };
+    }
+    
+    /**
+     * This is essential to make sure that the Spring Security session registry 
+     * is notified when the session is destroyed.
+     * @return
+     */
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
     }
 }

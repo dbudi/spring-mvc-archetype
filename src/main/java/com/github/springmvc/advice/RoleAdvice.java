@@ -16,22 +16,20 @@ import com.github.springmvc.model.Menu;
 import com.github.springmvc.model.Role;
 import com.github.springmvc.repository.RoleRepository;
 
-@ControllerAdvice
+//@ControllerAdvice
+@Deprecated /** move menu authorities and last login date to session (LoginListener) */
 public class RoleAdvice {
 	Logger logger = LoggerFactory.getLogger(getClass());
 	@Autowired
 	private RoleRepository roleRepository;
 	
 	@ModelAttribute("menuAuthorities")
-    public Set<String> populateMenuByRole() {	
-		UserDetails user = null;
+    public Set<String> populateMenuByRole() {
 		Set<String> menuAuthorities = new HashSet<String>();
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();		
-		if (principal != null && principal instanceof UserDetails) {
-			user = (UserDetails)principal;
-			logger.debug("userdetails={}", user);			
-			logger.debug("authorities={}", user.getAuthorities());
-			for (GrantedAuthority auth : user.getAuthorities()) {				
+
+		if (SecurityContextHolder.getContext().getAuthentication() != null) {	
+			logger.debug("authentication={}", SecurityContextHolder.getContext().getAuthentication());
+			for (GrantedAuthority auth : SecurityContextHolder.getContext().getAuthentication().getAuthorities()) {				
 				Role role = roleRepository.findOneByIdAndActive(auth.getAuthority(), true);				
 				if(role != null){
 					Set<Menu> menuSet = role.getMenus();
@@ -41,10 +39,10 @@ public class RoleAdvice {
 						}
 					}
 				}
-			}			
+			}	
 		} else {
 			logger.debug("not logged in yet");
 		}		
         return menuAuthorities;
-    }	
+    }		
 }

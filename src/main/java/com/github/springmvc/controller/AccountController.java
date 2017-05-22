@@ -52,6 +52,11 @@ public class AccountController extends CrudController<SignupForm, Account>{
 	@Autowired
 	private RoleRepository roleRepo;
 	
+	@ModelAttribute("module")
+	String module() {
+		return "usermgmt";
+	}
+	
 	@ModelAttribute("roleList")
 	public List<Role> populateRoles(){
 		try{

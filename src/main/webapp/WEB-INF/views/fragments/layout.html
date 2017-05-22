@@ -22,20 +22,20 @@
                 <li th:classappend="${module == 'home' ? 'active' : ''}">
                     <a href="#" th:href="@{/}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>&nbsp;Home</a>
                 </li>
-                <li class="dropdown" th:if="${#sets.contains(menuAuthorities, 'MENU_USR_MGMT')}">
+                <li th:classappend="${module == 'usermgmt' ? 'active' : ''}" class="dropdown" th:if="${session.MENU_AUTHORITIES != null && #sets.contains(session.MENU_AUTHORITIES, 'MENU_USR_MGMT')}">
 	              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">User Management<span class="caret"></span></a>
 	              <ul class="dropdown-menu">
-	                <li th:if="${#sets.contains(menuAuthorities, 'SUBMENU_USER')}"><a href="#" th:href="@{/account}" >User</a></li>
-	                <li th:if="${#sets.contains(menuAuthorities, 'SUBMENU_ROLE')}"><a href="#" th:href="@{/role}" >Role</a></li>	                                
+	                <li th:if="${session.MENU_AUTHORITIES != null && #sets.contains(session.MENU_AUTHORITIES, 'SUBMENU_USER')}"><a href="#" th:href="@{/account}" >User</a></li>
+	                <li th:if="${session.MENU_AUTHORITIES != null && #sets.contains(session.MENU_AUTHORITIES, 'SUBMENU_ROLE')}"><a href="#" th:href="@{/role}" >Role</a></li>	                                
 	              </ul>
 	            </li>
-	            <li class="dropdown" th:if="${#sets.contains(menuAuthorities, 'MENU_EXAMPLE')}">
+	            <li th:classappend="${module == 'upload' ? 'active' : ''}" class="dropdown" th:if="${session.MENU_AUTHORITIES != null && #sets.contains(session.MENU_AUTHORITIES, 'MENU_EXAMPLE')}">
 	              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Example<span class="caret"></span></a>
 	              <ul class="dropdown-menu">
-	                <li><a href="#" th:href="@{/upload}" th:if="${#sets.contains(menuAuthorities, 'SUBMENU_UPLOAD')}">Upload File</a></li>	                                         
+	                <li><a href="#" th:href="@{/upload}" th:if="${session.MENU_AUTHORITIES != null && #sets.contains(session.MENU_AUTHORITIES, 'SUBMENU_UPLOAD')}">Upload File</a></li>	                                         
 	              </ul>
 	            </li>
-                <li th:classappend="${module == 'about' ? 'active' : ''}" th:if="${#sets.contains(menuAuthorities, 'MENU_ABOUT')}">
+                <li th:classappend="${module == 'about' ? 'active' : ''}" th:if="${session.MENU_AUTHORITIES != null && #sets.contains(session.MENU_AUTHORITIES, 'MENU_ABOUT')}">
                     <a href="#about" th:href="@{/about}">About</a>
                 </li>
             </ul>           
@@ -57,6 +57,10 @@
 	                  </ul>
 	                  
 	                  <form style="visibility: hidden" id="logoutForm" method="post" action="#" th:action="@{/logout}"></form>
+	              </li>
+	              <li>
+	              	<a href="#" th:href="${#httpServletRequest.requestURI} +'?lang=en'" th:if="__${#locale}__=='in_ID'">English</a>
+					<a href="#" th:href="${#httpServletRequest.requestURI} +'?lang=in_ID'" th:if="__${#locale}__=='en'">Bahasa Indonesia</a>
 	              </li>
 	          </ul>
         </div>

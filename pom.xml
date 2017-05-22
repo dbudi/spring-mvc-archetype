@@ -30,7 +30,8 @@
         <hbm2ddl>update</hbm2ddl>
         <hibernate.show_sql>true</hibernate.show_sql>
         <hibernate.format_sql>true</hibernate.format_sql>
-        <hibernate.use_sql_comments>true</hibernate.use_sql_comments>        
+        <hibernate.use_sql_comments>true</hibernate.use_sql_comments>      
+        <dataSource.jndiName></dataSource.jndiName>  
     </properties>
     <!-- <parent>
         <groupId>io.spring.platform</groupId>

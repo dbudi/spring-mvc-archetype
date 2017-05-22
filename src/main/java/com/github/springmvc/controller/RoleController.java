@@ -64,6 +64,11 @@ public class RoleController extends CrudController<RoleForm, Role> {
 	@Autowired
 	private MenuService menuService;
 	
+	@ModelAttribute("module")
+	String module() {
+		return "usermgmt";
+	}
+	
 	@GetMapping({"","list"})
 	public String list(Model model){
 		List<Role> list = roleRepo.findAll();
