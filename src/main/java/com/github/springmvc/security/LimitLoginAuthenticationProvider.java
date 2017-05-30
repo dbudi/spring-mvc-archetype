@@ -16,7 +16,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.github.springmvc.repository.AccountRepository;
+import com.github.springmvc.exception.ConcurrentLoginException;
+import com.github.springmvc.repository.ActiveSessionRepository;
 import com.github.springmvc.service.AccountService;
 
 /**
@@ -28,6 +29,8 @@ public class LimitLoginAuthenticationProvider extends DaoAuthenticationProvider 
 	private static Logger logger = LoggerFactory.getLogger(LimitLoginAuthenticationProvider.class);
 	@Autowired
 	private AccountService accountService;	
+	@Autowired
+	private ActiveSessionRepository sessionRepo;
 	@Autowired
 	@Qualifier("accountService")
 	@Override
@@ -46,10 +49,15 @@ public class LimitLoginAuthenticationProvider extends DaoAuthenticationProvider 
 		try {
 
 			Authentication auth = super.authenticate(authentication);
+			// user already login
+			if(sessionRepo.existsUserName(authentication.getName()).get() > 0){
+				logger.error("user already login {}", authentication.getName());
+				throw new ConcurrentLoginException( authentication.getName() +" already login");
+			}
 
 			//if reach here, means login success, else an exception will be thrown
 			//reset the user_attempts
-			accountService.resetLoginFailCounterAndUpdateLastLogin(authentication.getName());
+			accountService.resetLoginFailCounter(authentication.getName());
 
 			return auth;
 

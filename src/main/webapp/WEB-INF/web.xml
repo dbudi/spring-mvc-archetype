@@ -5,7 +5,11 @@
 	<listener>
 		<description>This is essential to make sure that the Spring Security session registry is notified when the session is destroyed</description>
 		<listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
-	 </listener>	 
+	 </listener>	
+	 <listener>
+	 	<description>HibernatePersistenceProvider listener</description>
+	 	<listener-class>com.github.springmvc.config.HibernateContextListener</listener-class>
+	 </listener> 
 	 <listener>  
 	 	<description>Register a RequestContextListener so that Spring can inject the current HTTPSession</description>
 	   	<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>  

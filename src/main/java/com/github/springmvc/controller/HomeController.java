@@ -2,12 +2,15 @@ package com.github.springmvc.controller;
 
 import java.security.Principal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 @Controller
 class HomeController {
+	private static Logger logger = LoggerFactory.getLogger(HomeController.class);
 
 	@ModelAttribute("module")
 	String module() {
@@ -16,6 +19,7 @@ class HomeController {
 
 	@GetMapping("/")
 	String index(Principal principal) {
-		return principal != null ? "home/homeSignedIn" : "home/homeNotSignedIn";
+		logger.debug("principal={}", principal);
+		return principal != null ? "home/homeSignedIn" : "signin/signin";
 	}
 }

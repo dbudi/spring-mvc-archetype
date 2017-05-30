@@ -50,6 +50,13 @@ public class AccountService implements UserDetailsService {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@PostConstruct	
+	public void clearActiveSession() {
+		// clear active session
+		logger.info("clear active sessions");
+		activeSessionRepository.deleteAllInBatch();
+	}
 
 	@PostConstruct	
 	public void initialize() {
@@ -148,9 +155,10 @@ public class AccountService implements UserDetailsService {
 	}
 	
 	@Transactional
-	public void resetLoginFailCounterAndUpdateLastLogin(String userId){
+	public void resetLoginFailCounter(String userId){
 		accountRepository.updateLoginFailCounter(userId, 0);
-		accountRepository.updateLastLogin(userId, new Date());
+		// unlock user
+		accountRepository.setAccountNonLocked(userId, true);
 	}
 	
 	@Transactional

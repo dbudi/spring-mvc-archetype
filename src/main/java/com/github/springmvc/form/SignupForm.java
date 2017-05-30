@@ -31,6 +31,8 @@ public class SignupForm {
 	private String role;
 	
     private boolean active;
+    
+    private boolean accountNonLocked;
 
 	public String getUserId() {
 		return userId;
@@ -88,6 +90,14 @@ public class SignupForm {
 		this.active = active;
 	}
 
+	public boolean isAccountNonLocked() {
+		return accountNonLocked;
+	}
+
+	public void setAccountNonLocked(boolean accountNonLocked) {
+		this.accountNonLocked = accountNonLocked;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -105,6 +115,8 @@ public class SignupForm {
 		builder.append(role);
 		builder.append(", active=");
 		builder.append(active);
+		builder.append(", accountNonLocked=");
+		builder.append(accountNonLocked);
 		builder.append("]");
 		return builder.toString();
 	}

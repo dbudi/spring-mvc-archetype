@@ -3,10 +3,19 @@
 <head>
     <title th:text="#{view.account.list.title}">Account</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link href="../../../resources/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/resources/css/bootstrap.min.css}"/>
-    <link href="../../../resources/css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen" th:href="@{/resources/css/bootstrap-datetimepicker.min.css}" />        
-    <link rel="stylesheet" type="text/css" href="../../../resources/DataTables/datatables.min.css" th:href="@{/resources/DataTables/datatables.min.css}"/>
-    <link href="../../../resources/css/core.css" rel="stylesheet" media="screen" th:href="@{/resources/css/core.css}" />
+    <link  href="../../../resources/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/resources/css/bootstrap.min.css}"/>      
+    <link  href="../../../resources/DataTables/datatables.min.css" rel="stylesheet" media="screen" th:href="@{/resources/DataTables/datatables.min.css}"/>
+    <link href="../../../resources/css/font-awesome.min.css" rel="stylesheet" media="screen" th:href="@{/resources/css/font-awesome.min.css}"/>
+    <link href="../../../resources/css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen" th:href="@{/resources/css/bootstrap-datetimepicker.min.css}" />
+    <link  href="../../../resources/css/core.css" rel="stylesheet" media="screen" th:href="@{/resources/css/core.css}" />  
+       
+    <!-- Bootstrap core JavaScript
+    ================================================== -->    
+	<script src="../../../resources/js/jquery.min.js" th:src="@{/resources/js/jquery.min.js}"></script>
+    <script src="../../../resources/js/bootstrap.min.js" th:src="@{/resources/js/bootstrap.min.js}"></script>  
+	<script src="../../../resources/DataTables/datatables.min.js" th:src="@{/resources/DataTables/datatables.min.js}"></script>
+	<script src="../../../resources/js/moment.min.js" th:src="@{/resources/js/moment.min.js}"></script>
+	<script src="../../../resources/js/bootstrap-datetimepicker.min.js" th:src="@{/resources/js/bootstrap-datetimepicker.min.js}"></script> 
     
 </head>
 <body>
@@ -17,6 +26,7 @@
 	  <li class="active">User Management</li>
 	  <li class="active"><span th:text="#{view.account.list.title}">User List</span></li>  
 	</ol>
+	<div class="content">
     <h3><span th:text="#{view.account.list.title}">User List</span></h3>
 	<!-- /* Handle the flash message */-->
     <th:block th:if="${message != null}">
@@ -58,7 +68,8 @@
     </table>
     </div>
     <div id="exportButton"></div>
-</div>
+    </div> <!-- end content -->
+</div> <!-- end container -->
 
 <div th:replace="fragments/layout :: footer"></div>
 
@@ -68,35 +79,47 @@
 <div th:replace="fragments/components :: modal(id='edit-modal', title='Edit Account')"></div>
 <!-- Delete confirmation modal -->
 <div th:replace="fragments/components :: confirm(id='confirm-delete', title='Delete Account', message='Are You sure want to delete Account?')"></div>
-<!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-	<script src="../../../resources/js/jquery.min.js" th:src="@{/resources/js/jquery.min.js}"></script>
-    <script src="../../../resources/js/bootstrap.min.js" th:src="@{/resources/js/bootstrap.min.js}"></script>  
-	<script type="text/javascript" src="../../../resources/DataTables/datatables.min.js" th:src="@{/resources/DataTables/datatables.min.js}"></script>
+
 <script th:inline="javascript">	
 	$(document).ready(function() {	
 	    var table = $('#userGrid').DataTable( {
-		    buttons: ['excel', 'pdf']
+		    buttons: [
+		    	{
+			    	extend:    'excelHtml5',
+			    	exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5]
+	                },
+	                text:      '<i class="fa fa-lg fa-file-excel-o" style="color:green"></i>',
+	                titleAttr: 'Excel'
+                }, 
+		    	{
+			    	extend: 'pdfHtml5', 
+			    	exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5]
+	                },
+			    	text:      '<i class="fa fa-lg fa-file-pdf-o" style="color:red"></i>',
+	                titleAttr: 'PDF'
+			    }
+		    ]
 		} );
   
 		table.buttons().container().appendTo( '#exportButton' )
     		//.appendTo( $('.col-sm-6:eq(0)', table.table().container() ) );
-    		
-    	$('#add').on('click', function () {
-            addAccount();
-        })
-        $('.edit').on('click', function() {
-			var selectedId = $(this).attr('data-id');
-			console.log('selected id=' + selectedId);		
-			editAccount(selectedId);	
-		});
-		
-		$('#confirm-delete').on('show.bs.modal', function(e) {
-			console.log('confirm delete dialog');
-            $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));            
-        });
 	} );
+	
+	$('#add').on('click', function () {
+    	addAccount();
+    })
+    $('.edit').on('click', function() {
+		var selectedId = $(this).attr('data-id');
+		console.log('selected id=' + selectedId);		
+		editAccount(selectedId);	
+	});
+	
+	$('#confirm-delete').on('show.bs.modal', function(e) {
+		console.log('confirm delete dialog');
+    	$(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));            
+   	});
 	
 	function addAccount(){
 		$("#add-modal").modal();

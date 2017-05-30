@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.github.springmvc.exception.ConcurrentLoginException;
+
 @Controller
 public class SigninController {
 	@Autowired
@@ -77,9 +79,12 @@ public class SigninController {
   		}else if(exception instanceof LockedException) {
   			logger.debug("exception instanceof LockedException");
   			error = messageSource.getMessage("LockedException", null, locale);
+  		}else if(exception instanceof ConcurrentLoginException) {
+  			logger.debug("exception instanceof ConcurrentLoginException");
+  			error = messageSource.getMessage("ConcurrentLoginException", null, locale);
   		}else{
   			logger.debug("else");
-  			error = "BadCredentialsException";
+  			error = exception.getMessage();
   		}
   		logger.debug("error message = {}", error);
 
