@@ -9,6 +9,7 @@
 <body>
 <div th:replace="fragments/layout :: header"></div>
 <div class="container">
+	<div class="content">
     <!-- /* Handle the flash message */-->
     <th:block th:if="${message != null}">
         <!-- /* The message code is returned from the @Controller */ -->
@@ -16,7 +17,8 @@
     </th:block>
     <p class="lead text-center">
         Welcome to the Spring MVC Quickstart application!
-    </p>    
+    </p>   
+    </div> 
 </div>
 <div th:replace="fragments/layout :: footer"></div>
 <!-- Bootstrap core JavaScript

@@ -25,6 +25,7 @@
 	  <li class="active">User Management</li>
 	  <li class="active"><span th:text="#{view.role.list.title}">User List</span></li>  
 	</ol>
+	<div class="content">
     <h3><span th:text="#{view.role.list.title}">User List</span></h3>
 	<!-- /* Handle the flash message */-->
     <th:block th:if="${message != null}">
@@ -63,7 +64,8 @@
     </table>
     </div>
     <div id="exportButton"></div>
-</div>
+    </div><!-- end content -->
+</div> <!-- end container -->
 
 <div th:replace="fragments/layout :: footer"></div>
 
